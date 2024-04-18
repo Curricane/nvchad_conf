@@ -18,3 +18,6 @@ end, { desc = "Terminal Toggle Floating term" })
 map("n", "<A-k>", ":m .-2<CR>==", {desc = "Move current line / block with Alt-j/k ala vscode"})
 map("n", "<A-j>", ":m .+1<CR>==", {desc = "Move current line / block with Alt-j/k ala vscode"})
 
+-- nvim-tree
+map("n", "<leader>e", "<cmd>NvimTreeToggle<CR>", {desc = "Explorer"})
+

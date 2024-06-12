@@ -21,3 +21,8 @@ map("n", "<A-j>", ":m .+1<CR>==", {desc = "Move current line / block with Alt-j/
 -- nvim-tree
 map("n", "<leader>e", "<cmd>NvimTreeToggle<CR>", {desc = "Explorer"})
 
+
+map('n', 'gpd', "<cmd>lua require('goto-preview').goto_preview_definition()<CR>", { desc = "preview definition" })
+map('n', 'gpt', "<cmd>lua require('goto-preview').goto_preview_type_definition()<CR>", { desc = "preview type" })
+map('n', 'gpi', "<cmd>lua require('goto-preview').goto_preview_implementation()<CR>",{ desc = "previm impl" })
+map('n', 'gP', "<cmd>lua require('goto-preview').close_all_win()<CR>", { desc = "close all preview windows" })

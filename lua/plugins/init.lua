@@ -39,12 +39,8 @@ return {
 
   -- CUSTOM:
   {
-    'rust-lang/rust.vim',
-    lazy = true,
-    ft = 'rust'
-  },
-  {
     "simrat39/rust-tools.nvim",
+    ft = { "rust", "rs" },
     config = function()
       local rt = require("rust-tools")
       rt.setup({
@@ -134,9 +130,7 @@ return {
   {
     'rmagatti/goto-preview',
     config = function()
-      require('goto-preview').setup {
-        require("keybindings").set_goto_preview()
-      }
+      require('goto-preview').setup {}
     end
   },
 

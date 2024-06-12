@@ -36,6 +36,20 @@ return {
   -- 	},
   -- },
 
+  -- OVERRIDE
+  -- git stuff
+  {
+    "lewis6991/gitsigns.nvim",
+    event = "User FilePost",
+    opts = function()
+      return require "configs.gitsigns"
+    end,
+    config = function(_, opts)
+      dofile(vim.g.base46_cache .. "git")
+      require("gitsigns").setup(opts)
+    end,
+  },
+
 
   -- CUSTOM:
   {
@@ -133,6 +147,7 @@ return {
       require('goto-preview').setup {}
     end
   },
+
 
   -- mark 侧边标记
   {

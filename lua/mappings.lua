@@ -26,3 +26,10 @@ map('n', 'gpd', "<cmd>lua require('goto-preview').goto_preview_definition()<CR>"
 map('n', 'gpt', "<cmd>lua require('goto-preview').goto_preview_type_definition()<CR>", { desc = "preview type" })
 map('n', 'gpi', "<cmd>lua require('goto-preview').goto_preview_implementation()<CR>",{ desc = "previm impl" })
 map('n', 'gP', "<cmd>lua require('goto-preview').close_all_win()<CR>", { desc = "close all preview windows" })
+
+-- git keymap
+-- get keymap from gitsigns see configs.gitsigns
+-- git keymap from Telescope
+map('n', '<leader>go', "<cmd>Telescope git_status<cr>", { desc = "Open changed file" })
+map('n', '<leader>gb', "<cmd>Telescope git_branches<cr>", {desc = "Checkout branch" })
+map('n', '<leader>gc', "<cmd>Telescope git_commits<cr>", {desc = "Checkout commit" })

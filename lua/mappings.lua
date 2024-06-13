@@ -33,3 +33,6 @@ map('n', 'gP', "<cmd>lua require('goto-preview').close_all_win()<CR>", { desc = 
 map('n', '<leader>go', "<cmd>Telescope git_status<cr>", { desc = "Open changed file" })
 map('n', '<leader>gb', "<cmd>Telescope git_branches<cr>", {desc = "Checkout branch" })
 map('n', '<leader>gc', "<cmd>Telescope git_commits<cr>", {desc = "Checkout commit" })
+
+-- symbols-outline
+map('n', '<A-t>', ':SymbolsOutline<cr>', {desc = "Triggle SymbolsOutline"})

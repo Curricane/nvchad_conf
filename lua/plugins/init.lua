@@ -135,12 +135,17 @@ return {
       require("trouble").setup {}
     end
   },
-  -- {
-  --   'simrat39/symbols-outline.nvim',
-  --   lazy = true,
-  --   cmd = { 'SymbolsOutline', 'SymbolsOulineOpen' },
-  --   config = require("user.plugins.symbols-outline").config,
-  -- },
+  {
+    'simrat39/symbols-outline.nvim',
+    lazy = true,
+    cmd = { 'SymbolsOutline', 'SymbolsOulineOpen' },
+    opts = function()
+      return require "configs.symbols-outline"
+    end,
+    config = function(opts)
+      require("symbols-outline").setup(opts)
+    end,
+  },
   {
     'rmagatti/goto-preview',
     config = function()

@@ -36,3 +36,22 @@ map('n', '<leader>gc', "<cmd>Telescope git_commits<cr>", {desc = "Checkout commi
 
 -- symbols-outline
 map('n', '<A-t>', ':SymbolsOutline<cr>', {desc = "Triggle SymbolsOutline"})
+
+-- lsp stuff
+map('n', 'K', "<cmd>lua vim.lsp.buf.definition()<cr>", {desc = 'Show hover'})
+map('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<cr>', {desc = 'Goto definition'})
+map('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<cr>', {desc = 'Goto Declaration'})
+map('n', 'gr', '<cmd>lua vim.lsp.buf.references()<cr>', {desc = 'Goto references'})
+map('n', 'gI', "<cmd>lua vim.lsp.buf.implementation()<cr>", {desc = "Goto Implementation" })
+map('n', 'gs', "<cmd>lua vim.lsp.buf.signature_help()<cr>", {desc = "show signature help" })
+map('n', 'gl', function()
+  local float = vim.diagnostic.config().float
+
+  if float then
+    local config = type(float) == "table" and float or {}
+    config.scope = "line"
+
+    vim.diagnostic.open_float(config)
+  end
+end,
+{desc = "Show line diagnostics"})

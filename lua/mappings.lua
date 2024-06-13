@@ -38,7 +38,7 @@ map('n', '<leader>gc', "<cmd>Telescope git_commits<cr>", {desc = "Checkout commi
 map('n', '<A-t>', ':SymbolsOutline<cr>', {desc = "Triggle SymbolsOutline"})
 
 -- lsp stuff
-map('n', 'K', "<cmd>lua vim.lsp.buf.definition()<cr>", {desc = 'Show hover'})
+map('n', 'K', "<cmd>lua vim.lsp.buf.hover()<cr>", {desc = 'Show hover'})
 map('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<cr>', {desc = 'Goto definition'})
 map('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<cr>', {desc = 'Goto Declaration'})
 map('n', 'gr', '<cmd>lua vim.lsp.buf.references()<cr>', {desc = 'Goto references'})

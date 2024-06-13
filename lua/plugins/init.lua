@@ -28,23 +28,6 @@ return {
     version = '^4', -- Recommended
     lazy = false,   -- This plugin is already lazy
   },
-  {
-    -- A neovim plugin that helps managing crates.io dependencies.
-    "saecki/crates.nvim",
-    version = "v0.3.0",
-    dependencies = { "nvim-lua/plenary.nvim" },
-    config = function()
-      require("crates").setup {
-        null_ls = {
-          enabled = true,
-          name = "crates.nvim",
-        },
-        popup = {
-          border = "rounded",
-        },
-      }
-    end,
-  },
   -- nvim-lsp 进程独立应用
   {
     "j-hui/fidget.nvim",

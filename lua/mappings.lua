@@ -55,3 +55,23 @@ map('n', 'gl', function()
   end
 end,
 {desc = "Show line diagnostics"})
+map('n', 'gR', function()
+  local builtin = require 'telescope.builtin'
+  local themes = require 'telescope.themes'
+  local opts = themes.get_dropdown {
+    layout_strategy = "horizontal",
+    layout_config = {
+      width = 0.8,
+      height = 0.9,
+      preview_cutoff = 1,
+      preview_width = 0.7,
+      prompt_position = "top",
+    },
+    sorting_strategy = "ascending",
+    ignore_filename = false,
+    show_line = false,
+    previewer = true,
+  }
+  builtin.lsp_references(opts)
+end,
+{desc = "Tele references"})

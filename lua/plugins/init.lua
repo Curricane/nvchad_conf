@@ -157,6 +157,7 @@ return {
   -- mark 侧边标记
   {
     'chentoast/marks.nvim',
+    lazy = false,
     config = function()
       require 'marks'.setup {
         -- whether to map keybinds or not. default true

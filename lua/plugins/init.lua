@@ -7,35 +7,6 @@ return {
     end,
   },
 
-  -- These are some examples, uncomment them if you want to see them work!
-  -- {
-  --   "neovim/nvim-lspconfig",
-  --   config = function()
-  --     require("nvchad.configs.lspconfig").defaults()
-  --     require "configs.lspconfig"
-  --   end,
-  -- },
-  --
-  -- {
-  -- 	"williamboman/mason.nvim",
-  -- 	opts = {
-  -- 		ensure_installed = {
-  -- 			"lua-language-server", "stylua",
-  -- 			"html-lsp", "css-lsp" , "prettier"
-  -- 		},
-  -- 	},
-  -- },
-  --
-  -- {
-  -- 	"nvim-treesitter/nvim-treesitter",
-  -- 	opts = {
-  -- 		ensure_installed = {
-  -- 			"vim", "lua", "vimdoc",
-  --      "html", "css"
-  -- 		},
-  -- 	},
-  -- },
-
   -- OVERRIDE
   -- git stuff
   {
@@ -55,7 +26,7 @@ return {
   {
     'mrcjkb/rustaceanvim',
     version = '^4', -- Recommended
-    lazy = false, -- This plugin is already lazy
+    lazy = false,   -- This plugin is already lazy
   },
   {
     -- A neovim plugin that helps managing crates.io dependencies.
@@ -177,7 +148,7 @@ return {
         },
         mappings = {}
       }
-  end
+    end
   },
 
   -- 滚动条
@@ -185,7 +156,8 @@ return {
   {
     --quick move word
     'phaazon/hop.nvim',
-    branch = 'v2',   -- optional but strongly recommended
+    branch = 'v2', -- optional but strongly recommended
+    lazy = false,
     -- lazy = true,
     config = function()
       -- you can configure Hop the way you like here; see :h hop-config
@@ -194,7 +166,11 @@ return {
         return
       end
       hop.setup()
-      require("hop").setup { keys = 'etovxqpdygfblzhckisuran' }    
+      require("hop").setup { keys = 'etovxqpdygfblzhckisuran' }
+      vim.api.nvim_set_keymap('', 'f',
+        "<cmd>lua require'hop'.hint_char2({ direction = require'hop.hint'.HintDirection.AFTER_CURSOR })<cr>", {})
+      vim.api.nvim_set_keymap('', 'F',
+        "<cmd>lua require'hop'.hint_char2({ direction = require'hop.hint'.HintDirection.BEFORE_CURSOR })<cr>", {})
     end
   },
   {

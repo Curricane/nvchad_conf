@@ -75,3 +75,5 @@ map('n', 'gR', function()
   builtin.lsp_references(opts)
 end,
 {desc = "Tele references"})
+
+-- hop keymap see init.lua

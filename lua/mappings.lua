@@ -76,4 +76,7 @@ map('n', 'gR', function()
 end,
 {desc = "Tele references"})
 
+map('n', '<leader>l', '', { desc = 'lsp'})
+map('n', '<leader>lS', '<cmd>Telescope lsp_dynamic_workspace_symbols<cr>', { desc = 'Workspace Symbols'})
+
 -- hop keymap see init.lua

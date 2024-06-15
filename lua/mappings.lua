@@ -46,6 +46,8 @@ end, { desc = "terminal new horizontal term" })
 -- move
 map("n", "<A-k>", ":m .-2<CR>==", { desc = "Move current line / block with Alt-j/k ala vscode" })
 map("n", "<A-j>", ":m .+1<CR>==", { desc = "Move current line / block with Alt-j/k ala vscode" })
+map("v", "<A-k>", ":m '<-2<CR>gv-gv", {desc = "Move current block up"})
+map("v", "<A-j>", ":m '>+1<CR>gv-gv", {desc = "Move current block up"})
 
 -- nvim-tree
 map("n", "<leader>e", "<cmd>NvimTreeToggle<CR>", { desc = "Explorer" })

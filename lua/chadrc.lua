@@ -12,7 +12,7 @@ M.ui = {
 	-- 	["@comment"] = { italic = true },
 	-- },
   nvdash = {
-    load_on_startup = true,
+    load_on_startup = false,
 
     header = {
         "           ▄ ▄                   ",

@@ -46,8 +46,8 @@ end, { desc = "terminal new horizontal term" })
 -- move
 map("n", "<A-k>", ":m .-2<CR>==", { desc = "Move current line / block with Alt-j/k ala vscode" })
 map("n", "<A-j>", ":m .+1<CR>==", { desc = "Move current line / block with Alt-j/k ala vscode" })
-map("v", "<A-k>", ":m '<-2<CR>gv-gv", {desc = "Move current block up"})
-map("v", "<A-j>", ":m '>+1<CR>gv-gv", {desc = "Move current block up"})
+map("v", "<A-k>", ":m '<-2<CR>gv-gv", { desc = "Move current block up" })
+map("v", "<A-j>", ":m '>+1<CR>gv-gv", { desc = "Move current block up" })
 
 -- nvim-tree
 map("n", "<leader>e", "<cmd>NvimTreeToggle<CR>", { desc = "Explorer" })
@@ -183,7 +183,17 @@ wk.register({
 wk.register({
   b = {
     name = "Buffers",
-    f = { "<cmd>Telescope buffers<CR>", "telescope find buffers" }
+    f = { "<cmd>Telescope buffers<CR>", "telescope find buffers" },
+    h = {
+      function()
+        require("nvchad.tabufline").closeBufs_at_direction("left")
+      end, "Close all to the right"
+    },
+    l = {
+      function()
+        require("nvchad.tabufline").closeBufs_at_direction("right")
+      end, "Close all to the left"
+    },
   }
 }, { prefix = "<leader>" })
 

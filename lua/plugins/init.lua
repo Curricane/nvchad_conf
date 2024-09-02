@@ -94,9 +94,8 @@ return {
   },
   {
     'rmagatti/goto-preview',
-    config = function()
-      require('goto-preview').setup {}
-    end
+    event = 'BufEnter',
+    config = true,
   },
 
 

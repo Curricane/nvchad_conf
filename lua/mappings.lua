@@ -54,49 +54,39 @@ map("n", "<leader>e", "<cmd>NvimTreeToggle<CR>", { desc = "Explorer" })
 
 
 -- goto-preview
-wk.register({
-  g = {
-    name = "goto-preview",
-    pd = { "<cmd>lua require('goto-preview').goto_preview_definition()<CR>", "Preview Definition" },
-    pt = { "<cmd>lua require('goto-preview').goto_preview_type_definition()<CR>", "Preview Type" },
-    pi = { "<cmd>lua require('goto-preview').goto_preview_implementation()<CR>", "Preview Implementation" },
-    P = { "<cmd>lua require('goto-preview').close_all_win()<CR>", "Close All Preview Windows" },
-  },
-})
+wk.add(
+  {
+    { "g",  group = "goto" },
+    { "gP",  "<cmd>lua require('goto-preview').close_all_win()<CR>",                desc = "Close All Preview Windows" },
+    { "gpd", "<cmd>lua require('goto-preview').goto_preview_definition()<CR>",      desc = "Preview Definition" },
+    { "gpi", "<cmd>lua require('goto-preview').goto_preview_implementation()<CR>",  desc = "Preview Implementation" },
+    { "gpt", "<cmd>lua require('goto-preview').goto_preview_type_definition()<CR>", desc = "Preview Type" },
+  }
+)
 
 -- git keymap
 -- get keymap from gitsigns see configs.gitsigns
 -- git keymap from Telescope
-wk.register({
-  g = {
-    name = "Git",
-    g = { "<cmd>lua require 'lvim.core.terminal'.lazygit_toggle()<cr>", "Lazygit" },
-    j = { "<cmd>lua require 'gitsigns'.nav_hunk('next', {navigation_message = false})<cr>", "Next Hunk" },
-    k = { "<cmd>lua require 'gitsigns'.nav_hunk('prev', {navigation_message = false})<cr>", "Prev Hunk" },
-    l = { "<cmd>lua require 'gitsigns'.blame_line()<cr>", "Blame" },
-    L = { "<cmd>lua require 'gitsigns'.blame_line({full=true})<cr>", "Blame Line (full)" },
-    p = { "<cmd>lua require 'gitsigns'.preview_hunk()<cr>", "Preview Hunk" },
-    r = { "<cmd>lua require 'gitsigns'.reset_hunk()<cr>", "Reset Hunk" },
-    R = { "<cmd>lua require 'gitsigns'.reset_buffer()<cr>", "Reset Buffer" },
-    s = { "<cmd>lua require 'gitsigns'.stage_hunk()<cr>", "Stage Hunk" },
-    u = {
-      "<cmd>lua require 'gitsigns'.undo_stage_hunk()<cr>",
-      "Undo Stage Hunk",
-    },
-    o = { "<cmd>Telescope git_status<cr>", "Open changed file" },
-    b = { "<cmd>Telescope git_branches<cr>", "Checkout branch" },
-    c = { "<cmd>Telescope git_commits<cr>", "Checkout commit" },
-    C = {
-      "<cmd>Telescope git_bcommits<cr>",
-      "Checkout commit(for current file)",
-    },
-    d = {
-      "<cmd>Gitsigns diffthis HEAD<cr>",
-      "Git Diff",
-    },
-  },
-
-}, { prefix = "<leader>" })
+wk.add(
+  {
+    { "<leader>g",  group = "Git" },
+    { "<leader>gC", "<cmd>Telescope git_bcommits<cr>",                                                desc = "Checkout commit(for current file)" },
+    { "<leader>gL", "<cmd>lua require 'gitsigns'.blame_line({full=true})<cr>",                        desc = "Blame Line (full)" },
+    { "<leader>gR", "<cmd>lua require 'gitsigns'.reset_buffer()<cr>",                                 desc = "Reset Buffer" },
+    { "<leader>gb", "<cmd>Telescope git_branches<cr>",                                                desc = "Checkout branch" },
+    { "<leader>gc", "<cmd>Telescope git_commits<cr>",                                                 desc = "Checkout commit" },
+    { "<leader>gd", "<cmd>Gitsigns diffthis HEAD<cr>",                                                desc = "Git Diff" },
+    { "<leader>gg", "<cmd>lua require 'lvim.core.terminal'.lazygit_toggle()<cr>",                     desc = "Lazygit" },
+    { "<leader>gj", "<cmd>lua require 'gitsigns'.nav_hunk('next', {navigation_message = false})<cr>", desc = "Next Hunk" },
+    { "<leader>gk", "<cmd>lua require 'gitsigns'.nav_hunk('prev', {navigation_message = false})<cr>", desc = "Prev Hunk" },
+    { "<leader>gl", "<cmd>lua require 'gitsigns'.blame_line()<cr>",                                   desc = "Blame" },
+    { "<leader>go", "<cmd>Telescope git_status<cr>",                                                  desc = "Open changed file" },
+    { "<leader>gp", "<cmd>lua require 'gitsigns'.preview_hunk()<cr>",                                 desc = "Preview Hunk" },
+    { "<leader>gr", "<cmd>lua require 'gitsigns'.reset_hunk()<cr>",                                   desc = "Reset Hunk" },
+    { "<leader>gs", "<cmd>lua require 'gitsigns'.stage_hunk()<cr>",                                   desc = "Stage Hunk" },
+    { "<leader>gu", "<cmd>lua require 'gitsigns'.undo_stage_hunk()<cr>",                              desc = "Undo Stage Hunk" },
+  }
+)
 -- map('n', '<leader>go', "<cmd>Telescope git_status<cr>", { desc = "Open changed file" })
 -- map('n', '<leader>gb', "<cmd>Telescope git_branches<cr>", {desc = "Checkout branch" })
 -- map('n', '<leader>gc', "<cmd>Telescope git_commits<cr>", {desc = "Checkout commit" })
@@ -106,133 +96,137 @@ map('n', '<A-t>', ':SymbolsOutline<cr>', { desc = "Triggle SymbolsOutline" })
 
 -- lsp stuff
 map('n', 'K', "<cmd>lua vim.lsp.buf.hover()<cr>", { desc = 'Show hover' })
-wk.register({
-  g = {
-    name = "goto",
-    d = { "<cmd>lua vim.lsp.buf.definition()<cr>", "Goto Definition" },
-    D = { "<cmd>lua vim.lsp.buf.declaration()<cr>", "Goto Declaration" },
-    r = { "<cmd>lua vim.lsp.buf.references()<cr>", "Goto References" },
-    I = { "<cmd>lua vim.lsp.buf.implementation()<cr>", "Goto Implementation" },
-    s = { "<cmd>lua vim.lsp.buf.signature_help()<cr>", "Show Signature Help" },
-    l = { function()
-      local float = vim.diagnostic.config().float
-      if float then
-        local config = type(float) == "table" and float or {}
-        config.scope = "line"
-        vim.diagnostic.open_float(config)
-      end
-    end, "Show Line Diagnostics" },
-    R = { function()
-      local builtin = require 'telescope.builtin'
-      local themes = require 'telescope.themes'
-      local opts = themes.get_dropdown {
-        layout_strategy = "horizontal",
-        layout_config = {
-          width = 0.8,
-          height = 0.9,
-          preview_cutoff = 1,
-          preview_width = 0.7,
-          prompt_position = "top",
-        },
-        sorting_strategy = "ascending",
-        ignore_filename = false,
-        show_line = false,
-        previewer = true,
-      }
-      builtin.lsp_references(opts)
-    end, "Tele References" },
-  },
-})
+wk.add(
+  {
+    { "gD", "<cmd>lua vim.lsp.buf.declaration()<cr>",    desc = "Goto Declaration" },
+    { "gI", "<cmd>lua vim.lsp.buf.implementation()<cr>", desc = "Goto Implementation" },
+    {
+      "gR",
+      function()
+        local builtin = require 'telescope.builtin'
+        local themes = require 'telescope.themes'
+        local opts = themes.get_dropdown {
+          layout_strategy = "horizontal",
+          layout_config = {
+            width = 0.8,
+            height = 0.9,
+            preview_cutoff = 1,
+            preview_width = 0.7,
+            prompt_position = "top",
+          },
+          sorting_strategy = "ascending",
+          ignore_filename = false,
+          show_line = false,
+          previewer = true,
+        }
+        builtin.lsp_references(opts)
+      end,
+      desc = "Tele References"
+    },
+    { "gd", "<cmd>lua vim.lsp.buf.definition()<cr>",     desc = "Goto Definition" },
+    {
+      "gl",
+      function()
+        local float = vim.diagnostic.config().float
+        if float then
+          local config = type(float) == "table" and float or {}
+          config.scope = "line"
+          vim.diagnostic.open_float(config)
+        end
+      end,
+      desc = "Show Line Diagnostics"
+    },
+    { "gr", "<cmd>lua vim.lsp.buf.references()<cr>",     desc = "Goto References" },
+    { "gs", "<cmd>lua vim.lsp.buf.signature_help()<cr>", desc = "Show Signature Help" },
+  }
+)
 
-wk.register({
-  l = {
-    name = "LSP",
-    a = { "<cmd>lua vim.lsp.buf.code_action()<cr>", "Code Action" },
-    d = { "<cmd>Telescope diagnostics bufnr=0 theme=get_ivy<cr>", "Buffer Diagnostics" },
-    w = { "<cmd>Telescope diagnostics<cr>", "Diagnostics" },
-    f = { function()
-      require("conform").format { lsp_fallback = true }
-    end, "format files" },
-    i = { "<cmd>LspInfo<cr>", "Info" },
-    I = { "<cmd>Mason<cr>", "Mason Info" },
-    j = {
-      "<cmd>lua vim.diagnostic.goto_next()<cr>",
-      "Next Diagnostic",
-    },
-    k = {
-      "<cmd>lua vim.diagnostic.goto_prev()<cr>",
-      "Prev Diagnostic",
-    },
-    l = { "<cmd>lua vim.lsp.codelens.run()<cr>", "CodeLens Action" },
-    q = { "<cmd>lua vim.diagnostic.setloclist()<cr>", "Quickfix" },
-    r = { "<cmd>lua vim.lsp.buf.rename()<cr>", "Rename" },
-    s = { "<cmd>Telescope lsp_document_symbols<cr>", "Document Symbols" },
-    S = {
-      "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>",
-      "Workspace Symbols",
-    },
-    e = { "<cmd>Telescope quickfix<cr>", "Telescope Quickfix" },
-  },
 
-}, { prefix = "<leader>" })
+
+wk.add(
+  {
+    { "<leader>l",  group = "LSP" },
+    { "<leader>lI", "<cmd>Mason<cr>",                                       desc = "Mason Info" },
+    { "<leader>lS", "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>",     desc = "Workspace Symbols" },
+    { "<leader>la", "<cmd>lua vim.lsp.buf.code_action()<cr>",               desc = "Code Action" },
+    { "<leader>ld", "<cmd>Telescope diagnostics bufnr=0 theme=get_ivy<cr>", desc = "Buffer Diagnostics" },
+    { "<leader>le", "<cmd>Telescope quickfix<cr>",                          desc = "Telescope Quickfix" },
+    {
+      "<leader>lf",
+      function()
+        require("conform").format { lsp_fallback = true }
+      end,
+      desc = "format files"
+    },
+    { "<leader>li", "<cmd>LspInfo<cr>",                         desc = "Info" },
+    { "<leader>lj", "<cmd>lua vim.diagnostic.goto_next()<cr>",  desc = "Next Diagnostic" },
+    { "<leader>lk", "<cmd>lua vim.diagnostic.goto_prev()<cr>",  desc = "Prev Diagnostic" },
+    { "<leader>ll", "<cmd>lua vim.lsp.codelens.run()<cr>",      desc = "CodeLens Action" },
+    { "<leader>lq", "<cmd>lua vim.diagnostic.setloclist()<cr>", desc = "Quickfix" },
+    { "<leader>lr", "<cmd>lua vim.lsp.buf.rename()<cr>",        desc = "Rename" },
+    { "<leader>ls", "<cmd>Telescope lsp_document_symbols<cr>",  desc = "Document Symbols" },
+    { "<leader>lw", "<cmd>Telescope diagnostics<cr>",           desc = "Diagnostics" },
+  }
+)
 
 -- hop keymap see init.lua
 
 
 -- buffer
-wk.register({
-  b = {
-    name = "Buffers",
-    f = { "<cmd>Telescope buffers<CR>", "telescope find buffers" },
-    h = {
+wk.add(
+  {
+    { "<leader>b",  group = "Buffers" },
+    { "<leader>bf", "<cmd>Telescope buffers<CR>", desc = "telescope find buffers" },
+    {
+      "<leader>bh",
       function()
         require("nvchad.tabufline").closeBufs_at_direction("left")
-      end, "Close all to the right"
+      end,
+      desc = "Close all to the right"
     },
-    l = {
+    {
+      "<leader>bl",
       function()
         require("nvchad.tabufline").closeBufs_at_direction("right")
-      end, "Close all to the left"
+      end,
+      desc = "Close all to the left"
     },
   }
-}, { prefix = "<leader>" })
+)
 
 -- search
 map("n", "<leader>f", "<cmd>Telescope find_files<cr>", { desc = "telescope find files" })
-wk.register({
-  s = {
-    name = "Search",
-    b = { "<cmd>Telescope git_branches<cr>", "Checkout branch" },
-    c = { "<cmd>Telescope colorscheme<cr>", "Colorscheme" },
-    C = { "<cmd>Telescope commands<cr>", "Commands" },
-    f = { "<cmd>Telescope find_files follow=true no_ignore=true hidden=true<CR>", "telescope find all files" },
-    h = { "<cmd>Telescope help_tags<cr>", "Find Help" },
-    H = { "<cmd>Telescope highlights<cr>", "Find highlight groups" },
-    k = { "<cmd>Telescope keymaps<cr>", "Keymaps" },
-    l = { "<cmd>Telescope resume<cr>", "Resume last search" },
-    -- marks
-    m = { "<cmd>Telescope marks<CR>", "telescope find marks" },
-    M = { "<cmd>Telescope man_pages<cr>", "Man Pages" },
-    p = { "<cmd>lua require('telescope.builtin').colorscheme({enable_preview = true})<cr>",
-      "Colorscheme with Preview",
-    },
-    r = { "<cmd>Telescope oldfiles<cr>", "Open Recent File" },
-    R = { "<cmd>Telescope registers<cr>", "Registers" },
-    t = { "<cmd>Telescope live_grep<CR>", "telescope live grep" },
+wk.add(
+  {
+    { "<leader>s",  group = "Search" },
+    { "<leader>sC", "<cmd>Telescope commands<cr>",                                                    desc = "Commands" },
+    { "<leader>sH", "<cmd>Telescope highlights<cr>",                                                  desc = "Find highlight groups" },
+    { "<leader>sM", "<cmd>Telescope man_pages<cr>",                                                   desc = "Man Pages" },
+    { "<leader>sR", "<cmd>Telescope registers<cr>",                                                   desc = "Registers" },
+    { "<leader>sb", "<cmd>Telescope git_branches<cr>",                                                desc = "Checkout branch" },
+    { "<leader>sc", "<cmd>Telescope colorscheme<cr>",                                                 desc = "Colorscheme" },
+    { "<leader>sf", "<cmd>Telescope find_files follow=true no_ignore=true hidden=true<CR>",           desc = "telescope find all files" },
+    { "<leader>sh", "<cmd>Telescope help_tags<cr>",                                                   desc = "Find Help" },
+    { "<leader>sk", "<cmd>Telescope keymaps<cr>",                                                     desc = "Keymaps" },
+    { "<leader>sl", "<cmd>Telescope resume<cr>",                                                      desc = "Resume last search" },
+    { "<leader>sm", "<cmd>Telescope marks<CR>",                                                       desc = "telescope find marks" },
+    { "<leader>sp", "<cmd>lua require('telescope.builtin').colorscheme({enable_preview = true})<cr>", desc = "Colorscheme with Preview" },
+    { "<leader>sr", "<cmd>Telescope oldfiles<cr>",                                                    desc = "Open Recent File" },
+    { "<leader>st", "<cmd>Telescope live_grep<CR>",                                                   desc = "telescope live grep" },
   }
-}, { prefix = "<leader>" })
+)
 
 -- Lazy
-wk.register({
-  p = {
-    name = "Plugins",
-    i = { "<cmd>Lazy install<cr>", "Install" },
-    s = { "<cmd>Lazy sync<cr>", "Sync" },
-    S = { "<cmd>Lazy clear<cr>", "Status" },
-    c = { "<cmd>Lazy clean<cr>", "Clean" },
-    u = { "<cmd>Lazy update<cr>", "Update" },
-    p = { "<cmd>Lazy profile<cr>", "Profile" },
-    l = { "<cmd>Lazy log<cr>", "Log" },
-    d = { "<cmd>Lazy debug<cr>", "Debug" },
+wk.add(
+  {
+    { "<leader>p",  group = "Plugins" },
+    { "<leader>pS", "<cmd>Lazy clear<cr>",   desc = "Status" },
+    { "<leader>pc", "<cmd>Lazy clean<cr>",   desc = "Clean" },
+    { "<leader>pd", "<cmd>Lazy debug<cr>",   desc = "Debug" },
+    { "<leader>pi", "<cmd>Lazy install<cr>", desc = "Install" },
+    { "<leader>pl", "<cmd>Lazy log<cr>",     desc = "Log" },
+    { "<leader>pp", "<cmd>Lazy profile<cr>", desc = "Profile" },
+    { "<leader>ps", "<cmd>Lazy sync<cr>",    desc = "Sync" },
+    { "<leader>pu", "<cmd>Lazy update<cr>",  desc = "Update" },
   }
-}, { prefix = "<leader>" })
+)

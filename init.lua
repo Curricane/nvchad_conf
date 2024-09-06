@@ -36,6 +36,50 @@ vim.schedule(function()
   require "mappings"
 end)
 
+vim.g.rustaceanvim = {
+  -- 其他配置...
+  server = {
+    ---@param project_root string Path to the project root
+    settings         = function(project_root)
+      local ra = require('rustaceanvim.config.server')
+      local inner_settings = ra.load_rust_analyzer_settings(project_root, {
+        settings_file_pattern = 'rust-analyzer.json'
+      })
+      -- print(vim.inspect(inner_settings)) -- debug
+      return inner_settings
+    end,
+    default_settings = {
+      ["rust-analyzer"] = {
+        cargo = {
+          -- allFeatures = true,
+          loadOutDirsFromCheck = true,
+          runBuildScripts = true,
+          buildScripts = {
+            enable = true,
+          },
+        },
+        -- -- Add clippy lints for Rust.
+        checkOnSave = {
+          allFeatures = true,
+          command = "clippy",
+          extraArgs = { "--no-deps" },
+        },
+        procMacro = {
+          enable = true,
+        },
+        -- diagnostics = {
+        --   enable = true,
+        --   level = "info", -- 添加日志级别配置
+        -- },
+        -- logging = {
+        --   level = "info",
+        -- },
+      },
+    },
+    -- root_dir         = require('lspconfig').util.root_pattern("Cargo.toml", ".git")
+  },
+}
+
 
 -- CUSTOM: clipboard set
 local os_name = vim.loop.os_uname().sysname

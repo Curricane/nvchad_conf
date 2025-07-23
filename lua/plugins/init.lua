@@ -66,6 +66,7 @@ return {
       "nvim-tree/nvim-web-devicons",
       {
         "HakonHarnes/img-clip.nvim",
+        enabled = false, -- Disabled by default, toggle with :ToggleImagePaste
         event = "VeryLazy",
         opts = {
           default = {

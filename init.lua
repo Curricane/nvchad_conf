@@ -31,7 +31,8 @@ dofile(vim.g.base46_cache .. "statusline")
 -- Load core configurations
 require "options"
 require "nvchad.autocmds"
-require "core.clipboard" -- Load custom clipboard setup
+require "core.clipboard"   -- Load custom clipboard setup
+require "core.commands"    -- Load custom commands
 
 vim.schedule(function()
   require "mappings"

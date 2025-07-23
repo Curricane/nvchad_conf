@@ -57,7 +57,7 @@ return {
     event = "VeryLazy",
     version = false,
     opts = require "configs.avante",
-    build = "make",
+    build = vim.fn.has("win32") and "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" or "make",
     dependencies = {
       "stevearc/dressing.nvim",
       "nvim-lua/plenary.nvim",

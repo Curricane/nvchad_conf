@@ -1,7 +1,7 @@
 return {
   {
     "stevearc/conform.nvim",
-    -- event = 'BufWritePre', -- uncomment for format on save
+    event = "BufWritePre", -- uncomment for format on save
     opts = require "configs.conform",
   },
 
@@ -26,16 +26,19 @@ return {
     end,
   },
 
-
   -- CUSTOM:
   {
     'mrcjkb/rustaceanvim',
     version = '^5', -- Recommended
-    lazy = false,   -- This plugin is already lazy
+    event = "FileType rust",
+    config = function()
+      vim.g.rustaceanvim = require "configs.rustaceanvim"
+    end,
   },
   -- nvim-lsp 进程独立应用
   {
     "j-hui/fidget.nvim",
+    event = "LspAttach",
     config = function()
       require("fidget").setup()
     end,
@@ -43,18 +46,17 @@ return {
 
   {
     'nvim-treesitter/nvim-treesitter-textobjects',
-    lazy = true,
+    event = "BufReadPre",
     dependencies = { 'nvim-treesitter' }
   },
   {
     'romgrk/nvim-treesitter-context',
-    lazy = true,
+    event = "BufReadPre",
     dependencies = { 'nvim-treesitter' }
   },
 
   {
     'itchyny/vim-cursorword',
-    lazy = true,
     event = { 'BufReadPre', 'BufNewFile' },
     config = function()
       vim.api.nvim_command('augroup user_plugin_cursorword')
@@ -70,12 +72,11 @@ return {
   },
   {
     'ray-x/lsp_signature.nvim',
-    lazy = true,
+    event = "LspAttach",
     dependencies = { 'nvim-lspconfig' },
   },
   {
     'folke/trouble.nvim',
-    lazy = true,
     cmd = { "Trouble", "TroubleToggle", "TroubleRefresh" },
     config = function()
       require("trouble").setup {}
@@ -83,7 +84,6 @@ return {
   },
   {
     'simrat39/symbols-outline.nvim',
-    lazy = true,
     cmd = { 'SymbolsOutline', 'SymbolsOulineOpen' },
     opts = function()
       return require "configs.symbols-outline"
@@ -98,11 +98,10 @@ return {
     config = true,
   },
 
-
   -- mark 侧边标记
   {
     'chentoast/marks.nvim',
-    lazy = false,
+    event = "BufReadPre",
     config = function()
       require 'marks'.setup {
         -- whether to map keybinds or not. default true
@@ -139,13 +138,12 @@ return {
   },
 
   -- 滚动条
-  { 'dstein64/nvim-scrollview' },
+  { 'dstein64/nvim-scrollview', event = "BufReadPre" },
   {
     --quick move word
     'phaazon/hop.nvim',
     branch = 'v2', -- optional but strongly recommended
-    lazy = false,
-    -- lazy = true,
+    keys = { "f", "F" },
     config = function()
       -- you can configure Hop the way you like here; see :h hop-config
       local status_ok, hop = pcall(require, "hop")
@@ -163,10 +161,11 @@ return {
   {
     -- ranger
     'kevinhwang91/rnvimr',
+    cmd = "RnvimrToggle",
   },
   {
     'luozhiya/fittencode.nvim',
-    lazy = false,
+    event = "InsertEnter",
     config = function()
       require('fittencode').setup({
         keymaps = {
@@ -175,7 +174,7 @@ return {
             ['<A-l>'] = 'accept_line',
             ['<C-UP>'] = 'revoke_line',
             ['<C-Left>'] = 'revoke_word',
-            ['<A-\\>'] = 'triggering_completion',
+            ['<A-\'>'] = 'triggering_completion',
           },
         }
       })
@@ -184,7 +183,6 @@ return {
   {
     "yetone/avante.nvim",
     event = "VeryLazy",
-    lazy = false,
     version = false, -- Set this to "*" to always pull the latest release version, or set it to false to update to the latest code changes.
     opts = {
       -- add any opts here

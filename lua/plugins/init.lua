@@ -40,13 +40,22 @@ return {
     event = "InsertEnter",
     config = function()
       require('fittencode').setup({
+        inline = {
+          enable = true,
+          auto_trigger = true,
+          disable_when_backspace = false,
+          accept_mode = "commit", -- or "stage"
+        },
+        source = {
+          enable = false, -- Disable source completion if it's a separate feature
+        },
         keymaps = {
           inline = {
             ['<TAB>'] = 'accept_all_suggestions',
             ['<A-l>'] = 'accept_line',
-            ['<C-UP>'] = 'revoke_line',
+            ['<A-Down>'] = 'revoke_line',
             ['<C-Left>'] = 'revoke_word',
-            ['<A-\'>'] = 'triggering_completion',
+            ['<A-j>'] = 'triggering_completion',
           },
         }
       })
@@ -57,7 +66,7 @@ return {
     event = "VeryLazy",
     version = false,
     opts = require "configs.avante",
-    build = vim.fn.has("win32") and "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" or "make",
+    build = "make",
     dependencies = {
       "stevearc/dressing.nvim",
       "nvim-lua/plenary.nvim",

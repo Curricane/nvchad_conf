@@ -6,7 +6,7 @@
 return {
   -- Set the default provider to use.
   -- We are using "openai" as a compatibility layer for DeepSeek.
-  provider = "qwen-cli",
+  provider = "gemini-cli",
 
   -- A table to hold configurations for all providers.
   -- This structure makes it easy to add more providers in the future.
@@ -70,11 +70,12 @@ return {
   acp_providers = {
     ["gemini-cli"] = {
       command = "gemini",
-      args = { "--experimental-acp" },
+      args = { "--experimental-acp", "-m", "gemini-2.5-flash" },
       env = {
         NODE_NO_WARNINGS = "1",
         GEMINI_API_KEY = os.getenv "GEMINI_API_KEY",
       },
+      -- proxy = "http://127.0.0.1:7890",
     },
     ["claude-code"] = {
       command = "npx",
@@ -95,8 +96,6 @@ return {
 
   -- Key mappings configuration
   mappings = {
-    ask = "<M-o>", -- Ask AI
-    edit = "<leader>ae", -- Edit with AI
-    refresh = "<leader>ar", -- Refresh AI response
+    ask = "<M-2>", -- Ask AI
   },
 }

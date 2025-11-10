@@ -74,8 +74,8 @@ return {
       env = {
         NODE_NO_WARNINGS = "1",
         GEMINI_API_KEY = os.getenv("GEMINI_API_KEY"),
-        HTTP_PROXY = "http://192.168.99.192:7890",
-        HTTPS_PROXY = "http://192.168.99.192:7890",
+        HTTP_PROXY = os.getenv("HTTP_PROXY"),
+        HTTPS_PROXY = os.getenv("HTTPS_PROXY"),
       },
       -- proxy = "http://127.0.0.1:7890",
     },

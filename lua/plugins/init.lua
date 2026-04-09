@@ -32,6 +32,15 @@ return {
       require("fidget").setup()
     end,
   },
+  {
+    "nvim-tree/nvim-tree.lua",
+    cmd = { "NvimTreeToggle", "NvimTreeFocus" },
+    opts = {
+      filters = {
+        git_ignored = false,
+      },
+    },
+  },
   { "nvim-treesitter/nvim-treesitter-textobjects", event = "BufReadPre", dependencies = { "nvim-treesitter" } },
   { "romgrk/nvim-treesitter-context", event = "BufReadPre", dependencies = { "nvim-treesitter" } },
   {

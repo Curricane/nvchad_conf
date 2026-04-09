@@ -19,8 +19,8 @@ return {
   -- CUSTOM:
   {
     "mrcjkb/rustaceanvim",
-    version = "^5",
-    event = "FileType rust",
+    version = "^9",
+    lazy = true,
     config = function()
       vim.g.rustaceanvim = require "configs.rustaceanvim"
     end,

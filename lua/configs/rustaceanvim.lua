@@ -1,5 +1,6 @@
 -- lua/configs/rustaceanvim.lua
 return {
+  autostart = false,
   server = {
     settings = function(project_root)
       local ra = require('rustaceanvim.config.server')

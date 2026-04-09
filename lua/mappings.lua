@@ -92,6 +92,15 @@ wk.add({
   { "<leader>lq", "<cmd>lua vim.diagnostic.setloclist()<cr>", desc = "Quickfix List" },
   { "<leader>lr", "<cmd>lua vim.lsp.buf.rename()<cr>", desc = "Rename" },
   { "<leader>ls", "<cmd>Telescope lsp_document_symbols<cr>", desc = "Document Symbols" },
+  { "<leader>lt", function()
+      require("lazy").load({ plugins = { "rustaceanvim" } })
+      vim.schedule(function()
+        require("rustaceanvim.lsp").start()
+      end)
+    end, desc = "Start Rust LSP" },
+  { "<leader>lT", function()
+      require("rustaceanvim.lsp").stop()
+    end, desc = "Stop Rust LSP" },
   { "<leader>lw", "<cmd>Telescope diagnostics<cr>", desc = "Workspace Diagnostics" },
 
   -- Search (Telescope)

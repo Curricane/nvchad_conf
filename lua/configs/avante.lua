@@ -2,11 +2,29 @@
 -- Modern, multi-provider-ready configuration for avante.nvim
 -- Based on official documentation.
 
+-- =============================================================================
+-- PREREQUISITES FOR ACP PROVIDERS
+-- =============================================================================
+-- claude-code ACP:
+--   1. npm install -g @agentclientprotocol/claude-agent-acp
+--   2. 确保环境变量已设置 (export 到 ~/.bashrc 并 source):
+--      - ANTHROPIC_AUTH_TOKEN
+--      - ANTHROPIC_BASE_URL
+--      - ANTHROPIC_MODEL (可选)
+--
+-- gemini-cli ACP:
+--   1. 确保 gemini CLI 已安装
+--   2. 设置 GEMINI_API_KEY 环境变量
+--
+-- qwen-cli ACP:
+--   1. 确保 qwen CLI 已安装
+-- =============================================================================
+
 ---@type avante.Config
 return {
   -- Set the default provider to use.
   -- We are using "openai" as a compatibility layer for DeepSeek.
-  provider = "gemini-cli",
+  provider = "claude-code",
 
   -- A table to hold configurations for all providers.
   -- This structure makes it easy to add more providers in the future.
@@ -81,10 +99,13 @@ return {
     },
     ["claude-code"] = {
       command = "npx",
-      args = { "acp-claude-code" },
+      args = { "-y", "-g", "@agentclientprotocol/claude-agent-acp" },
       env = {
         NODE_NO_WARNINGS = "1",
-        ANTHROPIC_API_KEY = os.getenv "ANTHROPIC_API_KEY",
+        ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_AUTH_TOKEN"),
+        ANTHROPIC_BASE_URL = os.getenv("ANTHROPIC_BASE_URL"),
+        ACP_PATH_TO_CLAUDE_CODE_EXECUTABLE = vim.fn.exepath("claude"),
+        ACP_PERMISSION_MODE = "bypassPermissions",
       },
     },
     ["qwen-cli"] = {

@@ -76,8 +76,7 @@ return {
   },
   { "dstein64/nvim-scrollview", event = "BufReadPre" },
   {
-    "phaazon/hop.nvim",
-    branch = "v2",
+    "smoka7/hop.nvim",
     keys = { "f", "F" },
     config = function()
       require "configs.hop"

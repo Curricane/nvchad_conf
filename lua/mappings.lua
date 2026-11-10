@@ -10,7 +10,7 @@ nomap("n", "<leader>b")
 -- nvimtree NvimTreeToggle
 nomap("n", "<C-n>")
 
--- telescope
+-- picker (fzf-lua)
 nomap("n", "<leader>fw")
 nomap("n", "<leader>fb")
 nomap("n", "<leader>fh")
@@ -36,13 +36,13 @@ wk.add({
   { "<leader>e", "<cmd>NvimTreeToggle<CR>", desc = "Explorer" },
   { "<A-1>", function() require("nvchad.term").new { pos = "sp" } end, desc = "Terminal New Horizontal" },
   { "<A-3>", function() require("nvchad.term").toggle { pos = "float", id = "floatTerm" } end, desc = "Terminal Toggle Floating", mode = { "n", "t" } },
-  -- symbols-outline.nvim 已归档（2024-01 停更），改用 Telescope 的文档符号；需要可折叠的树再用 aerial.nvim
-  { "<A-t>", "<cmd>Telescope lsp_document_symbols<cr>", desc = "Symbols Outline (Telescope)" },
+  -- symbols-outline.nvim 已归档（2024-01 停更），改用 fzf-lua 的文档符号；需要可折叠的树再用 aerial.nvim
+  { "<A-t>", "<cmd>FzfLua lsp_document_symbols<cr>", desc = "Symbols Outline (fzf-lua)" },
   { "<C-`>", function() require("nvchad.term").toggle { pos = "float", id = "floatTerm" } end, desc = "Terminal Toggle Floating", mode = { "n", "t" } },
 
   -- Window & Buffer Management
   { "<leader>b", group = "Buffers" },
-  { "<leader>bf", "<cmd>Telescope buffers<CR>", desc = "Find Buffers" },
+  { "<leader>bf", "<cmd>FzfLua buffers<cr>", desc = "Find Buffers" },
   { "<leader>bh", function() require("nvchad.tabufline").closeBufs_at_direction("left") end, desc = "Close Buffers to the Left" },
   { "<leader>bl", function() require("nvchad.tabufline").closeBufs_at_direction("right") end, desc = "Close Buffers to the Right" },
 
@@ -50,7 +50,10 @@ wk.add({
   { "g", group = "Goto" },
   { "gD", "<cmd>lua vim.lsp.buf.declaration()<cr>", desc = "Goto Declaration" },
   { "gI", "<cmd>lua vim.lsp.buf.implementation()<cr>", desc = "Goto Implementation" },
-  { "gR", function() require('telescope.builtin').lsp_references(require('telescope.themes').get_dropdown { layout_strategy = "horizontal", layout_config = { width = 0.8, height = 0.9, preview_cutoff = 1, preview_width = 0.7, prompt_position = "top" }, sorting_strategy = "ascending", ignore_filename = false, show_line = false, previewer = true }) end, desc = "Telescope References" },
+  { "gR", function()
+      require("lazy").load { plugins = { "fzf-lua" } }
+      require("fzf-lua").lsp_references { winopts = { height = 0.85, width = 0.8 } }
+    end, desc = "LSP References" },
   { "gd", "<cmd>lua vim.lsp.buf.definition()<cr>", desc = "Goto Definition" },
   { "gl", function() local float = vim.diagnostic.config().float; if float then local config = type(float) == "table" and float or {}; config.scope = "line"; vim.diagnostic.open_float(config) end end, desc = "Show Line Diagnostics" },
   { "gr", "<cmd>lua vim.lsp.buf.references()<cr>", desc = "Goto References" },
@@ -62,17 +65,17 @@ wk.add({
 
   -- Git
   { "<leader>g", group = "Git" },
-  { "<leader>gC", "<cmd>Telescope git_bcommits<cr>", desc = "Checkout Commit (Buffer)" },
+  { "<leader>gC", "<cmd>FzfLua git_bcommits<cr>", desc = "Checkout Commit (Buffer)" },
   { "<leader>gL", "<cmd>lua require 'gitsigns'.blame_line({full=true})<cr>", desc = "Blame Line (Full)" },
   { "<leader>gR", "<cmd>lua require 'gitsigns'.reset_buffer()<cr>", desc = "Reset Buffer" },
-  { "<leader>gb", "<cmd>Telescope git_branches<cr>", desc = "Checkout Branch" },
-  { "<leader>gc", "<cmd>Telescope git_commits<cr>", desc = "Checkout Commit" },
+  { "<leader>gb", "<cmd>FzfLua git_branches<cr>", desc = "Checkout Branch" },
+  { "<leader>gc", "<cmd>FzfLua git_commits<cr>", desc = "Checkout Commit" },
   { "<leader>gd", "<cmd>Gitsigns diffthis HEAD<cr>", desc = "Git Diff" },
   { "<leader>gg", "<cmd>lua require 'lvim.core.terminal'.lazygit_toggle()<cr>", desc = "Lazygit" },
   { "<leader>gj", "<cmd>lua require 'gitsigns'.nav_hunk('next', {navigation_message = false})<cr>", desc = "Next Hunk" },
   { "<leader>gk", "<cmd>lua require 'gitsigns'.nav_hunk('prev', {navigation_message = false})<cr>", desc = "Prev Hunk" },
   { "<leader>gl", "<cmd>lua require 'gitsigns'.blame_line()<cr>", desc = "Blame Line" },
-  { "<leader>go", "<cmd>Telescope git_status<cr>", desc = "Open Changed File" },
+  { "<leader>go", "<cmd>FzfLua git_status<cr>", desc = "Open Changed File" },
   { "<leader>gp", "<cmd>lua require 'gitsigns'.preview_hunk()<cr>", desc = "Preview Hunk" },
   { "<leader>gr", "<cmd>lua require 'gitsigns'.reset_hunk()<cr>", desc = "Reset Hunk" },
   { "<leader>gs", "<cmd>lua require 'gitsigns'.stage_hunk()<cr>", desc = "Stage Hunk" },
@@ -82,10 +85,10 @@ wk.add({
   { "K", "<cmd>lua vim.lsp.buf.hover()<cr>", desc = "Show Hover" },
   { "<leader>l", group = "LSP" },
   { "<leader>lI", "<cmd>Mason<cr>", desc = "Mason Info" },
-  { "<leader>lS", "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>", desc = "Workspace Symbols" },
+  { "<leader>lS", "<cmd>FzfLua lsp_live_workspace_symbols<cr>", desc = "Workspace Symbols" },
   { "<leader>la", "<cmd>lua vim.lsp.buf.code_action()<cr>", desc = "Code Action" },
-  { "<leader>ld", "<cmd>Telescope diagnostics bufnr=0 theme=get_ivy<cr>", desc = "Buffer Diagnostics" },
-  { "<leader>le", "<cmd>Telescope quickfix<cr>", desc = "Telescope Quickfix" },
+  { "<leader>ld", "<cmd>FzfLua diagnostics_document<cr>", desc = "Buffer Diagnostics" },
+  { "<leader>le", "<cmd>FzfLua quickfix<cr>", desc = "Quickfix List" },
   { "<leader>lf", function() require("conform").format { lsp_fallback = true } end, desc = "Format File" },
   { "<leader>li", "<cmd>LspInfo<cr>", desc = "LSP Info" },
   { "<leader>lj", "<cmd>lua vim.diagnostic.goto_next()<cr>", desc = "Next Diagnostic" },
@@ -93,26 +96,29 @@ wk.add({
   { "<leader>ll", "<cmd>lua vim.lsp.codelens.run()<cr>", desc = "CodeLens Action" },
   { "<leader>lq", "<cmd>lua vim.diagnostic.setloclist()<cr>", desc = "Quickfix List" },
   { "<leader>lr", "<cmd>lua vim.lsp.buf.rename()<cr>", desc = "Rename" },
-  { "<leader>ls", "<cmd>Telescope lsp_document_symbols<cr>", desc = "Document Symbols" },
-  { "<leader>lw", "<cmd>Telescope diagnostics<cr>", desc = "Workspace Diagnostics" },
+  { "<leader>ls", "<cmd>FzfLua lsp_document_symbols<cr>", desc = "Document Symbols" },
+  { "<leader>lw", "<cmd>FzfLua diagnostics_workspace<cr>", desc = "Workspace Diagnostics" },
 
-  -- Search (Telescope)
-  { "<leader>f", "<cmd>Telescope find_files<cr>", desc = "Find Files" },
+  -- Search (fzf-lua)
+  { "<leader>f", "<cmd>FzfLua files<cr>", desc = "Find Files" },
   { "<leader>s", group = "Search" },
-  { "<leader>sC", "<cmd>Telescope commands<cr>", desc = "Commands" },
-  { "<leader>sH", "<cmd>Telescope highlights<cr>", desc = "Find Highlight Groups" },
-  { "<leader>sM", "<cmd>Telescope man_pages<cr>", desc = "Man Pages" },
-  { "<leader>sR", "<cmd>Telescope registers<cr>", desc = "Registers" },
-  { "<leader>sb", "<cmd>Telescope git_branches<cr>", desc = "Checkout Branch" },
-  { "<leader>sc", "<cmd>Telescope colorscheme<cr>", desc = "Colorscheme" },
-  { "<leader>sf", "<cmd>Telescope find_files follow=true no_ignore=true hidden=true<CR>", desc = "Find All Files" },
-  { "<leader>sh", "<cmd>Telescope help_tags<cr>", desc = "Find Help" },
-  { "<leader>sk", "<cmd>Telescope keymaps<cr>", desc = "Keymaps" },
-  { "<leader>sl", "<cmd>Telescope resume<cr>", desc = "Resume Last Search" },
-  { "<leader>sm", "<cmd>Telescope marks<CR>", desc = "Find Marks" },
-  { "<leader>sp", "<cmd>lua require('telescope.builtin').colorscheme({enable_preview = true})<cr>", desc = "Colorscheme with Preview" },
-  { "<leader>sr", "<cmd>Telescope oldfiles<cr>", desc = "Open Recent File" },
-  { "<leader>st", "<cmd>Telescope live_grep<CR>", desc = "Live Grep" },
+  { "<leader>sC", "<cmd>FzfLua commands<cr>", desc = "Commands" },
+  { "<leader>sH", "<cmd>FzfLua highlights<cr>", desc = "Find Highlight Groups" },
+  { "<leader>sM", "<cmd>FzfLua man_pages<cr>", desc = "Man Pages" },
+  { "<leader>sR", "<cmd>FzfLua registers<cr>", desc = "Registers" },
+  { "<leader>sb", "<cmd>FzfLua git_branches<cr>", desc = "Checkout Branch" },
+  { "<leader>sc", "<cmd>FzfLua colorschemes<cr>", desc = "Colorscheme" },
+  { "<leader>sf", function()
+      require("lazy").load { plugins = { "fzf-lua" } }
+      require("fzf-lua").files { fd_opts = "--color=never --type f --hidden --no-ignore --follow --exclude .git" }
+    end, desc = "Find All Files (incl. hidden)" },
+  { "<leader>sh", "<cmd>FzfLua help_tags<cr>", desc = "Find Help" },
+  { "<leader>sk", "<cmd>FzfLua keymaps<cr>", desc = "Keymaps" },
+  { "<leader>sl", "<cmd>FzfLua resume<cr>", desc = "Resume Last Search" },
+  { "<leader>sm", "<cmd>FzfLua marks<cr>", desc = "Find Marks" },
+  { "<leader>sp", "<cmd>FzfLua colorschemes<cr>", desc = "Colorscheme with Preview" },
+  { "<leader>sr", "<cmd>FzfLua oldfiles<cr>", desc = "Open Recent File" },
+  { "<leader>st", "<cmd>FzfLua live_grep<cr>", desc = "Live Grep" },
 
   -- Lazy Package Manager
   { "<leader>p", group = "Plugins (Lazy)" },

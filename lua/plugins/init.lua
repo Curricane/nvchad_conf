@@ -34,124 +34,16 @@ return {
   },
   { "nvim-treesitter/nvim-treesitter-textobjects", event = "BufReadPre", dependencies = { "nvim-treesitter" } },
   { "romgrk/nvim-treesitter-context", event = "BufReadPre", dependencies = { "nvim-treesitter" } },
-  {
-    "itchyny/vim-cursorword",
-    event = { "BufReadPre", "BufNewFile" },
-    config = function()
-      require "configs.cursorword"
-    end,
-  },
-  { "ray-x/lsp_signature.nvim", event = "LspAttach", dependencies = { "nvim-lspconfig" } },
-  {
-    "folke/trouble.nvim",
-    cmd = { "Trouble", "TroubleToggle", "TroubleRefresh" },
-    config = function()
-      require("trouble").setup {}
-    end,
-  },
-  {
-    "simrat39/symbols-outline.nvim",
-    cmd = { "SymbolsOutline", "SymbolsOulineOpen" },
-    opts = require "configs.symbols-outline",
-    config = function(_, opts)
-      require("symbols-outline").setup(opts)
-    end,
-  },
   { "rmagatti/goto-preview", event = "BufEnter", config = true },
+
+  -- NvChad 默认的 cmp 源里带 cmp-async-path（上游 2024-02 已归档），这里关掉并从 sources 里摘掉
+  { "cmp-async-path", enabled = false },
   {
-    "chentoast/marks.nvim",
-    event = "BufReadPre",
-    config = function()
-      require "configs.marks"
+    "hrsh7th/nvim-cmp",
+    opts = function(_, opts)
+      opts.sources = vim.tbl_filter(function(s)
+        return s.name ~= "async_path"
+      end, opts.sources or {})
     end,
-  },
-  { "dstein64/nvim-scrollview", event = "BufReadPre" },
-  {
-    "phaazon/hop.nvim",
-    branch = "v2",
-    keys = { "f", "F" },
-    config = function()
-      require "configs.hop"
-    end,
-  },
-  { "kevinhwang91/rnvimr", cmd = "RnvimrToggle" },
-  {
-    "luozhiya/fittencode.nvim",
-    event = "InsertEnter",
-    config = function()
-      require("fittencode").setup {
-        inline = {
-          enable = true,
-          auto_trigger = true,
-          disable_when_backspace = false,
-          accept_mode = "commit", -- or "stage"
-        },
-        source = {
-          enable = false, -- Disable source completion if it's a separate feature
-        },
-        keymaps = {
-          inline = {
-            ["<TAB>"] = "accept_all_suggestions",
-            ["<A-l>"] = "accept_line",
-            ["<A-Down>"] = "revoke_line",
-            ["<C-Left>"] = "revoke_word",
-            ["<A-j>"] = "triggering_completion",
-          },
-        },
-      }
-    end,
-  },
-  {
-    "yetone/avante.nvim",
-    event = "VeryLazy",
-    version = false,
-    opts = require "configs.avante",
-    build = "make",
-    keys = {
-      {
-        "<leader>a+",
-        function()
-          local tree_ext = require "avante.extensions.nvim_tree"
-          tree_ext.add_file()
-        end,
-        desc = "Select file in NvimTree",
-        ft = "NvimTree",
-      },
-      {
-        "<leader>a-",
-        function()
-          local tree_ext = require "avante.extensions.nvim_tree"
-          tree_ext.remove_file()
-        end,
-        desc = "Deselect file in NvimTree",
-        ft = "NvimTree",
-      },
-    },
-    dependencies = {
-      "stevearc/dressing.nvim",
-      "nvim-lua/plenary.nvim",
-      "MunifTanjim/nui.nvim",
-      "nvim-telescope/telescope.nvim",
-      "nvim-tree/nvim-web-devicons",
-      {
-        "HakonHarnes/img-clip.nvim",
-        enabled = false, -- Disabled by default, toggle with :ToggleImagePaste
-        event = "VeryLazy",
-        opts = {
-          default = {
-            embed_image_as_base64 = false,
-            prompt_for_file_name = false,
-            drag_and_drop = { insert_mode = true },
-            use_absolute_path = true,
-          },
-        },
-      },
-      {
-        "MeanderingProgrammer/render-markdown.nvim",
-        opts = { file_types = { "markdown", "Avante" } },
-        ft = { "markdown", "Avante" },
-      },
-    },
   },
 }
-

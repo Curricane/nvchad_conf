@@ -36,7 +36,9 @@ wk.add({
   { "<leader>e", "<cmd>NvimTreeToggle<CR>", desc = "Explorer" },
   { "<A-1>", function() require("nvchad.term").new { pos = "sp" } end, desc = "Terminal New Horizontal" },
   { "<A-3>", function() require("nvchad.term").toggle { pos = "float", id = "floatTerm" } end, desc = "Terminal Toggle Floating", mode = { "n", "t" } },
-  { "<A-t>", ":SymbolsOutline<cr>", desc = "Toggle Symbols Outline" },
+  -- symbols-outline.nvim 已归档（2024-01 停更），改用 Telescope 的文档符号；需要可折叠的树再用 aerial.nvim
+  { "<A-t>", "<cmd>Telescope lsp_document_symbols<cr>", desc = "Symbols Outline (Telescope)" },
+  { "<C-`>", function() require("nvchad.term").toggle { pos = "float", id = "floatTerm" } end, desc = "Terminal Toggle Floating", mode = { "n", "t" } },
 
   -- Window & Buffer Management
   { "<leader>b", group = "Buffers" },

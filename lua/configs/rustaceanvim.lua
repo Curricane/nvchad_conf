@@ -1,6 +1,8 @@
 -- lua/configs/rustaceanvim.lua
 return {
   server = {
+    -- 默认不自动拉起 rust-analyzer，需要时用 <leader>lt（内部调 :RustAnalyzer start/stop）
+    auto_attach = false,
     settings = function(project_root)
       local ra = require('rustaceanvim.config.server')
       local inner_settings = ra.load_rust_analyzer_settings(project_root, {

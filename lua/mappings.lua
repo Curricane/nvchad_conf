@@ -95,6 +95,29 @@ wk.add({
   { "<leader>lk", "<cmd>lua vim.diagnostic.goto_prev()<cr>", desc = "Prev Diagnostic" },
   { "<leader>ll", "<cmd>lua vim.lsp.codelens.run()<cr>", desc = "CodeLens Action" },
   { "<leader>lq", "<cmd>lua vim.diagnostic.setloclist()<cr>", desc = "Quickfix List" },
+  {
+    "<leader>lt",
+    function()
+      local buf = vim.api.nvim_get_current_buf()
+      local clients = vim.lsp.get_clients { bufnr = buf }
+      if #clients > 0 then
+        local names = {}
+        for _, c in ipairs(clients) do
+          names[#names + 1] = c.name
+          vim.lsp.stop_client(c.id)
+        end
+        vim.notify("LSP stopped: " .. table.concat(names, ", "))
+      elseif vim.bo[buf].filetype == "rust" then
+        -- rustaceanvim 配了 server.auto_attach = false，所以默认不会自己起
+        vim.notify "rust-analyzer starting…"
+        require("lazy").load { plugins = { "rustaceanvim" } }
+        require("rustaceanvim.lsp").start()
+      else
+        vim.notify("No LSP attached (ft=" .. vim.bo[buf].filetype .. ")", vim.log.levels.WARN)
+      end
+    end,
+    desc = "Toggle LSP (rust: start/stop rust-analyzer)",
+  },
   { "<leader>lr", "<cmd>lua vim.lsp.buf.rename()<cr>", desc = "Rename" },
   { "<leader>ls", "<cmd>FzfLua lsp_document_symbols<cr>", desc = "Document Symbols" },
   { "<leader>lw", "<cmd>FzfLua diagnostics_workspace<cr>", desc = "Workspace Diagnostics" },

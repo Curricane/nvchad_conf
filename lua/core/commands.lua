@@ -22,3 +22,8 @@ end, { desc = "Toggle the img-clip.nvim plugin for pasting images" })
 vim.api.nvim_create_user_command("GitShow", function(args)
   require("configs.git_view").show(args.fargs[1], args.fargs[2])
 end, { nargs = "*", desc = "Show a commit diff in a tab (default HEAD)" })
+
+-- :GitBranchDiff [base] [file] —— 当前分支 vs base（默认 master/main）的左右对照
+vim.api.nvim_create_user_command("GitBranchDiff", function(args)
+  require("configs.git_view").branch_diff(args.fargs[1], args.fargs[2])
+end, { nargs = "*", desc = "Side-by-side diff of current branch vs base branch" })

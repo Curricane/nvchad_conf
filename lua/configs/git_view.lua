@@ -126,6 +126,89 @@ function M.worktree(rev)
   vim.cmd(("DiffviewOpen %s"):format(rev or "HEAD"))
 end
 
+---@param ref string
+---@return boolean
+local function ref_exists(ref)
+  vim.fn.system { "git", "rev-parse", "--verify", "--quiet", ref .. "^{commit}" }
+  return vim.v.shell_error == 0
+end
+
+---自动推断“基准分支”（PR 里的 base）：优先 origin 的默认分支，再退到 master/main
+---@return string?
+function M.default_base()
+  local out = vim.fn.systemlist { "git", "symbolic-ref", "--short", "refs/remotes/origin/HEAD" }
+  if vim.v.shell_error == 0 and out[1] and out[1] ~= "" then
+    return out[1]
+  end
+  for _, ref in ipairs { "master", "main", "origin/master", "origin/main" } do
+    if ref_exists(ref) then
+      return ref
+    end
+  end
+end
+
+---当前分支 ↔ base 的左右对照（三点 = merge-base，只看“你这条分支的改动”，适合 review）
+---@param base string? 默认自动推断 master/main
+---@param file string? 只看这个路径
+function M.branch_diff(base, file)
+  if not in_git_repo() then
+    vim.notify("当前目录不是 git 仓库", vim.log.levels.WARN, { title = "git" })
+    return
+  end
+  base = (base ~= nil and base ~= "") and base or M.default_base()
+  if not base then
+    vim.notify(
+      "找不到 master/main 分支，手动传一个：:GitBranchDiff <base>",
+      vim.log.levels.WARN,
+      { title = "git" }
+    )
+    return
+  end
+  if not ref_exists(base) then
+    vim.notify(("分支/ref 不存在：%s"):format(base), vim.log.levels.WARN, { title = "git" })
+    return
+  end
+  -- 三点：diff 的是 merge-base(base,HEAD) 与 HEAD，不会把 base 上别人的新提交混进来
+  local cmd = ("DiffviewOpen %s...HEAD"):format(base)
+  if file then
+    cmd = cmd .. " -- " .. vim.fn.fnameescape(file)
+  end
+  vim.cmd(cmd)
+end
+
+---选一个分支跟当前分支比（fzf 列表，默认把 master/main 放最上面）
+function M.branch_pick()
+  local fzf = require "fzf-lua"
+  local branches = git_lines { "git", "for-each-ref", "--format=%(refname:short)", "refs/heads", "refs/remotes" }
+  if not branches then
+    return
+  end
+  -- origin/HEAD 是符号引用，没意义；去掉它
+  branches = vim.tbl_filter(function(b)
+    return b ~= "origin" and b ~= "origin/HEAD"
+  end, branches)
+  local base = M.default_base()
+  if base then
+    table.sort(branches, function(a, b)
+      local a_def, b_def = a == base, b == base
+      if a_def ~= b_def then
+        return a_def
+      end
+      return a < b
+    end)
+  end
+  fzf.fzf_exec(branches, {
+    prompt = "Branch base> ",
+    actions = {
+      ["default"] = function(selected)
+        if selected and selected[1] then
+          M.branch_diff((selected[1]:gsub("%s+$", "")))
+        end
+      end,
+    },
+  })
+end
+
 ---文件历史浏览器（commit 列表 + 文件树 + 左右对照）
 ---@param file string? 只看这个文件
 function M.history(file)

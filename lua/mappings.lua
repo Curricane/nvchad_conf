@@ -116,6 +116,13 @@ wk.add {
     end,
     desc = "Buffer Commits (side-by-side)",
   },
+  {
+    "<leader>gB",
+    function()
+      require("configs.git_view").branch_pick()
+    end,
+    desc = "Diff branch vs current",
+  },
   { "<leader>gD", "<cmd>DiffviewOpen<cr>", desc = "Diff index vs worktree" },
   {
     "<leader>gH",

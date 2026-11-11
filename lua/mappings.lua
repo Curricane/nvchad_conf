@@ -31,6 +31,18 @@ nomap("n", "<leader>h")
 -------------------- add yours here
 local wk = require "which-key"
 
+-- 浮动终端
+-- 注意：Ctrl-` 不是 ASCII 控制字符，普通 xterm 系终端根本不会把它发出来；
+-- 只有终端支持 kitty keyboard protocol（kitty / wezterm / ghostty / foot 等）
+-- 或者开了 modifyOtherKeys 时 Nvim 才收得到。所以这里用 vim.keymap.set 直接绑，
+-- 并且保留 <A-3> 作为任何终端都能用的备选。
+local function float_term_toggle()
+  require("nvchad.term").toggle { pos = "float", id = "floatTerm" }
+end
+
+vim.keymap.set({ "n", "t" }, "<C-`>", float_term_toggle, { desc = "Terminal Toggle Floating" })
+vim.keymap.set({ "n", "t" }, "<A-3>", float_term_toggle, { desc = "Terminal Toggle Floating (fallback)" })
+
 wk.add {
   -- Terminals & Explorer
   { "<leader>e", "<cmd>NvimTreeToggle<CR>", desc = "Explorer" },
@@ -41,24 +53,8 @@ wk.add {
     end,
     desc = "Terminal New Horizontal",
   },
-  {
-    "<A-3>",
-    function()
-      require("nvchad.term").toggle { pos = "float", id = "floatTerm" }
-    end,
-    desc = "Terminal Toggle Floating",
-    mode = { "n", "t" },
-  },
   -- symbols-outline.nvim 已归档（2024-01 停更），改用 fzf-lua 的文档符号；需要可折叠的树再用 aerial.nvim
   { "<A-t>", "<cmd>FzfLua lsp_document_symbols<cr>", desc = "Symbols Outline (fzf-lua)" },
-  {
-    "<C-`>",
-    function()
-      require("nvchad.term").toggle { pos = "float", id = "floatTerm" }
-    end,
-    desc = "Terminal Toggle Floating",
-    mode = { "n", "t" },
-  },
 
   -- Window & Buffer Management
   { "<leader>b", group = "Buffers" },

@@ -41,6 +41,21 @@ return {
       require("gitsigns").setup(opts)
     end,
   },
+  -- 左右对照看 diff（commit / 工作区 / 文件历史都用它），fzf-lua 负责选 commit
+  {
+    "sindrets/diffview.nvim",
+    cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewToggleFiles", "DiffviewFileHistory", "DiffviewRefresh" },
+    opts = {
+      enhanced_diff_hl = true,
+      use_icons = false,
+      view = {
+        default = { layout = "diff2_horizontal" },
+        merge_tool = { layout = "diff3_horizontal" },
+        file_history = { layout = "diff2_horizontal" },
+      },
+      file_panel = { win_config = { width = 34 } },
+    },
+  },
 
   -- CUSTOM:
   {

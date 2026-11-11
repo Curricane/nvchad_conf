@@ -106,7 +106,7 @@ wk.add {
   { "gpi", "<cmd>lua require('goto-preview').goto_preview_implementation()<CR>", desc = "Preview Implementation" },
   { "gpt", "<cmd>lua require('goto-preview').goto_preview_type_definition()<CR>", desc = "Preview Type" },
 
-  -- Git：看「已提交的改动」靠 configs/git_view.lua（git show → 只读 diff tab），
+  -- Git：看改动默认用 diffview.nvim（左边文件树 + 左右两页对照）
   -- fzf-lua 的 git_commits 默认回车是 git checkout（会切走 HEAD），所以这里换掉
   { "<leader>g", group = "Git" },
   {
@@ -114,9 +114,24 @@ wk.add {
     function()
       require("configs.git_view").bcommits()
     end,
-    desc = "Buffer Commits (diff)",
+    desc = "Buffer Commits (side-by-side)",
+  },
+  { "<leader>gD", "<cmd>DiffviewOpen<cr>", desc = "Diff index vs worktree" },
+  {
+    "<leader>gH",
+    function()
+      require("configs.git_view").history(vim.fn.expand "%:.")
+    end,
+    desc = "File History (side-by-side)",
   },
   { "<leader>gL", "<cmd>lua require 'gitsigns'.blame_line({full=true})<cr>", desc = "Blame Line (Full)" },
+  {
+    "<leader>gQ",
+    function()
+      require("configs.git_view").close()
+    end,
+    desc = "Close Diffview",
+  },
   { "<leader>gR", "<cmd>lua require 'gitsigns'.reset_buffer()<cr>", desc = "Reset Buffer" },
   { "<leader>gb", "<cmd>FzfLua git_branches<cr>", desc = "Checkout Branch" },
   {
@@ -124,15 +139,29 @@ wk.add {
     function()
       require("configs.git_view").commits()
     end,
-    desc = "Commits (view diff)",
+    desc = "Commits (side-by-side)",
   },
-  { "<leader>gd", "<cmd>Gitsigns diffthis HEAD<cr>", desc = "Git Diff" },
+  {
+    "<leader>gd",
+    function()
+      require("configs.git_view").worktree "HEAD"
+    end,
+    desc = "Diff worktree vs HEAD",
+  },
+  { "<leader>ge", "<cmd>Gitsigns diffthis HEAD<cr>", desc = "Diff This File (vs HEAD)" },
   {
     "<leader>gg",
     function()
       require("configs.git_view").lazygit()
     end,
     desc = "Lazygit",
+  },
+  {
+    "<leader>gh",
+    function()
+      require("configs.git_view").history()
+    end,
+    desc = "Repo History (side-by-side)",
   },
   -- target='all' 才会连 staged 的 hunk 一起跳；默认是 'unstaged'，会跳过 staged 的改动
   {
@@ -154,9 +183,16 @@ wk.add {
   {
     "<leader>gv",
     function()
+      require("configs.git_view").diffview "HEAD"
+    end,
+    desc = "Last Commit (side-by-side)",
+  },
+  {
+    "<leader>gx",
+    function()
       require("configs.git_view").show "HEAD"
     end,
-    desc = "Show HEAD Commit",
+    desc = "Raw git show HEAD (unified)",
   },
 
   -- LSP

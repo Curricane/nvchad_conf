@@ -91,7 +91,52 @@ local function sha_from(line)
   return strip_ansi(line):match "(%x%x%x%x%x%x%x%x*)"
 end
 
----commit 列表 → 回车看完整 diff，<C-d> 看这个 commit 改了哪些文件
+-- git 空树（用于 root commit：没有 parent 时没法用 <rev>^!）
+local EMPTY_TREE = "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
+
+---@param rev string
+---@return boolean
+local function has_parent(rev)
+  local out = vim.fn.systemlist { "git", "rev-list", "--parents", "-n", "1", rev }
+  local fields = vim.split(out[1] or "", "%s+", { trimempty = true })
+  return #fields >= 2
+end
+
+---左右对照看某个 commit 的改动（diffview.nvim）
+---@param rev string?  默认 HEAD
+---@param file string? 只看这个路径
+function M.diffview(rev, file)
+  rev = (rev ~= nil and rev ~= "") and rev or "HEAD"
+  if not in_git_repo() then
+    vim.notify("当前目录不是 git 仓库", vim.log.levels.WARN, { title = "git" })
+    return
+  end
+  -- <rev>^! 就是 “这个 commit 引入的改动”；root commit 没 parent，用空树替代
+  local range = has_parent(rev) and (rev .. "^!") or (EMPTY_TREE .. ".." .. rev)
+  local cmd = "DiffviewOpen " .. range
+  if file then
+    cmd = cmd .. " -- " .. vim.fn.fnameescape(file)
+  end
+  vim.cmd(cmd)
+end
+
+---工作区 ↔ HEAD（所有未提交的改动，左右对照，能直接 stage hunk）
+---@param rev string?
+function M.worktree(rev)
+  vim.cmd(("DiffviewOpen %s"):format(rev or "HEAD"))
+end
+
+---文件历史浏览器（commit 列表 + 文件树 + 左右对照）
+---@param file string? 只看这个文件
+function M.history(file)
+  vim.cmd(("DiffviewFileHistory %s"):format(file and vim.fn.fnameescape(file) or ""))
+end
+
+function M.close()
+  vim.cmd "DiffviewClose"
+end
+
+---commit 列表 → 回车左右对照看这个 commit，<C-d> 看它改了哪些文件
 function M.commits()
   local fzf = require "fzf-lua"
   fzf.git_commits {
@@ -99,7 +144,7 @@ function M.commits()
       ["enter"] = function(selected)
         local sha = sha_from(selected and selected[1])
         if sha then
-          M.show(sha)
+          M.diffview(sha)
         end
       end,
       ["ctrl-d"] = function(selected, opts)
@@ -112,7 +157,7 @@ function M.commits()
   }
 end
 
----某个 commit 改动的文件列表（enter = 看该文件在这个 commit 里的 diff）
+---某个 commit 改动的文件列表（enter = 左右对照看该文件在这个 commit 里的 diff）
 ---@param rev string
 ---@param opts table? fzf-lua 的运行期 opts（从 action 回调透传）
 function M.commit_files(rev, opts)
@@ -125,13 +170,13 @@ function M.commit_files(rev, opts)
     actions = {
       ["enter"] = function(selected, o)
         local file = path.entry_to_file(selected[1], o).path
-        M.show(rev, file)
+        M.diffview(rev, file)
       end,
     },
   }
 end
 
----当前 buffer 的历史 commit（enter = 看该文件那一刻的 diff）
+---当前 buffer 的历史 commit（enter = 左右对照看该文件那一刻的改动）
 function M.bcommits()
   local fzf = require "fzf-lua"
   local rel = vim.fn.expand "%:."
@@ -140,7 +185,7 @@ function M.bcommits()
       ["enter"] = function(selected)
         local sha = sha_from(selected and selected[1])
         if sha then
-          M.show(sha, rel)
+          M.diffview(sha, rel)
         end
       end,
     },

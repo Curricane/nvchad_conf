@@ -1,5 +1,9 @@
 require "nvchad.options"
 
+-- nvim-treesitter master 与 Nvim 0.12 的 captures 参数不兼容，必须尽早装 shim
+-- （在 nvim-treesitter 被加载之前，即启动阶段）
+require "configs.ts_compat"
+
 -- add yours here!
 
 -- local o = vim.o

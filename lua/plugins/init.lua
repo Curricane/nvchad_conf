@@ -60,24 +60,45 @@ return {
   },
 
   -- ==========================================================
-  -- treesitter（legacy master 分支）
-  -- NvChad v2.5 只提供 ensure_installed，从未调用 configs.setup()，
-  -- 所以高亮/缩进一直是关的，这里补上。
-  -- （main 分支需要 tree-sitter-cli >= 0.26.1 且从 github.com 下载 grammar
-  --   tarball，本机 443 到 github.com 被墙，暂不切）
+  -- treesitter：nvim-treesitter main 分支（为 Nvim 0.12 重写的版本）
+  -- main 不支持懒加载，而且高亮/缩进不再自动开启，需要自己启。
+  -- parser 安装需要 tree-sitter-cli >= 0.26.1（本机已 cargo install 0.27.2）。
+  -- 安装时要从 github.com 拉 grammar tarball，而本机 github.com:443 不通，
+  -- 所以把仓库内的 bin/curl 包到 PATH 最前面（把 /archive/ 重写到 codeload）。
+  -- 细节见 TREESITTER.md
   -- ==========================================================
   {
     "nvim-treesitter/nvim-treesitter",
-    branch = "master",
+    branch = "main",
+    lazy = false,
     build = ":TSUpdate",
-    opts = {
-      ensure_installed = { "rust", "lua", "luadoc", "printf", "vim", "vimdoc", "markdown", "markdown_inline" },
-    },
     config = function()
-      require("nvim-treesitter.configs").setup {
-        highlight = { enable = true },
-        indent = { enable = true },
+      -- 让 nvim 内跑的 :TSInstall / :TSUpdate / lazy 的 build 都能拿到 curl 包装
+      local shim_dir = vim.fn.stdpath "config" .. "/bin"
+      if vim.uv.fs_stat(shim_dir .. "/curl") and not vim.env.PATH:find(shim_dir, 1, true) then
+        vim.env.PATH = shim_dir .. ":" .. vim.env.PATH
+      end
+
+      require("nvim-treesitter").install {
+        "rust",
+        "lua",
+        "luadoc",
+        "printf",
+        "vim",
+        "vimdoc",
+        "markdown",
+        "markdown_inline",
       }
+
+      -- main 分支：高亮/缩进要显式开（有 parser 的 buffer 才开）
+      vim.api.nvim_create_autocmd("FileType", {
+        group = vim.api.nvim_create_augroup("ts_start", { clear = true }),
+        callback = function(args)
+          if pcall(vim.treesitter.start, args.buf) then
+            vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+          end
+        end,
+      })
     end,
   },
   { "romgrk/nvim-treesitter-context", event = "BufReadPre", dependencies = { "nvim-treesitter" } },

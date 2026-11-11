@@ -1,0 +1,25 @@
+#!/bin/bash
+# 只用于 nvim-treesitter main 分支的 parser 安装：
+# 本机 github.com:443 不通，但 codeload.github.com 通。
+# 把 https://github.com/<o>/<r>/archive/<ref>.tar.gz 改写成
+#    https://codeload.github.com/<o>/<r>/tar.gz/<ref>
+# 其它 URL / 参数原样交给系统 curl。
+# 注意：必须用绝对路径，否则 $(command -v curl) 会解析到自己，造成 exec 无限递归。
+REAL_CURL=/bin/curl
+[ -x "$REAL_CURL" ] || REAL_CURL=/usr/bin/curl
+args=()
+for a in "$@"; do
+  case "$a" in
+    https://github.com/*/archive/*)
+      rest=${a#https://github.com/}
+      owner=${rest%%/*}
+      rest=${rest#*/}
+      repo=${rest%%/*}
+      ref=${rest#*/archive/}
+      ref=${ref%.tar.gz}
+      args+=("https://codeload.github.com/${owner}/${repo}/tar.gz/${ref}")
+      ;;
+    *) args+=("$a") ;;
+  esac
+done
+exec "$REAL_CURL" "${args[@]}"

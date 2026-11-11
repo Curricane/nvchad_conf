@@ -88,6 +88,7 @@ return {
         "vimdoc",
         "markdown",
         "markdown_inline",
+        "query",
       }
 
       -- main 分支：高亮/缩进要显式开（有 parser 的 buffer 才开）

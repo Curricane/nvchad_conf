@@ -86,6 +86,6 @@ vim.api.nvim_create_autocmd("FileType", {
 
 ## 历史遗留
 
-`~/.local/share/nvim/lazy/nvim-treesitter/parser/*.so` 是切 main 之前（master 时代）
-留下的旧 parser，现在不会被用到（`site/parser` 优先），位置也没人清理。
-想彻底干净可以删掉那个 `parser/` 目录。
+切 main 之前（master 时代）的旧 parser 曾放在 `~/.local/share/nvim/lazy/nvim-treesitter/parser/`，
+已于迁移后清理。现在 parser 只有一份：`~/.local/share/nvim/site/parser/`。
+注意 `query` parser（编辑 treesitter 查询文件用）也是走 main 装的，别当垃圾删。

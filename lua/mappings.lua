@@ -113,7 +113,12 @@ wk.add({
         require("lazy").load { plugins = { "rustaceanvim" } }
         require("rustaceanvim.lsp").start()
       else
-        vim.notify("No LSP attached (ft=" .. vim.bo[buf].filetype .. ")", vim.log.levels.WARN)
+        local ok, info = require("configs.lspconfig").start_for_buffer(buf)
+        if ok then
+          vim.notify(info .. " starting…")
+        else
+          vim.notify(info, vim.log.levels.WARN)
+        end
       end
     end,
     desc = "Toggle LSP (rust: start/stop rust-analyzer)",

@@ -72,8 +72,9 @@ wk.add({
   { "<leader>gc", "<cmd>FzfLua git_commits<cr>", desc = "Checkout Commit" },
   { "<leader>gd", "<cmd>Gitsigns diffthis HEAD<cr>", desc = "Git Diff" },
   { "<leader>gg", "<cmd>lua require 'lvim.core.terminal'.lazygit_toggle()<cr>", desc = "Lazygit" },
-  { "<leader>gj", "<cmd>lua require 'gitsigns'.nav_hunk('next', {navigation_message = false})<cr>", desc = "Next Hunk" },
-  { "<leader>gk", "<cmd>lua require 'gitsigns'.nav_hunk('prev', {navigation_message = false})<cr>", desc = "Prev Hunk" },
+  -- target='all' 才会连 staged 的 hunk 一起跳；默认是 'unstaged'，会跳过 staged 的改动
+  { "<leader>gj", "<cmd>lua require 'gitsigns'.nav_hunk('next', {target = 'all', navigation_message = false})<cr>", desc = "Next Hunk" },
+  { "<leader>gk", "<cmd>lua require 'gitsigns'.nav_hunk('prev', {target = 'all', navigation_message = false})<cr>", desc = "Prev Hunk" },
   { "<leader>gl", "<cmd>lua require 'gitsigns'.blame_line()<cr>", desc = "Blame Line" },
   { "<leader>go", "<cmd>FzfLua git_status<cr>", desc = "Open Changed File" },
   { "<leader>gp", "<cmd>lua require 'gitsigns'.preview_hunk()<cr>", desc = "Preview Hunk" },

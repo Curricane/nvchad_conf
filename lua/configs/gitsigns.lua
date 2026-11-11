@@ -9,23 +9,10 @@ local options = {
     untracked = { text = "│" },
   },
 
-  on_attach = function(bufnr)
-    local gs = package.loaded.gitsigns
-
-    local function opts(desc)
-      return { buffer = bufnr, desc = desc }
-    end
-
-    local map = vim.keymap.set
-
-    map("n", "<leader>gr", gs.reset_hunk, opts "Reset Hunk")
-    map("n", "<leader>gR", gs.reset_buffer, opts "Reset Buffer")
-    map("n", "<leader>gp", gs.preview_hunk, opts "Preview Hunk")
-    map("n", "<leader>gl", gs.blame_line, opts "Blame Line")
-    map("n", "<leader>gd", gs.diffthis, opts "Diff this")
-    map("n", "<leader>gj", gs.next_hunk, opts "Next Hunk")
-    map("n", "<leader>gk", gs.prev_hunk, opts "Prev Hunk")
-  end,
+  -- 注意：这里曾经有一份 buffer-local 的 <leader>g* 映射（gs.next_hunk / gs.prev_hunk ...），
+  -- 它们会盖掉 lua/mappings.lua 里的全局定义，而且 next_hunk/prev_hunk 已被 gitsigns
+  -- 标记为 @deprecated（默认 target='unstaged'，会跳过已 staged 的 hunk）。
+  -- 现在统一由 mappings.lua 的 <leader>gj / <leader>gk 负责（nav_hunk + target='all'）。
 }
 
 return options
